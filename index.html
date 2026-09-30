@@ -1,133 +1,85 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>美容室CLanからの挑戦状</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新感覚ナンプレゲーム</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="app">
+    <!-- ヘッダー（タイトル・TP表示・テーマ切替など） -->
+    <header class="game-header">
+      <h1 class="game-title">ナンプレ Master</h1>
+      <div class="status-bar">
+        <span id="tp-display">TP: 0</span>
+      </div>
+    </header>
 
-    <div id="menu-screen" class="screen-container">
-        <button class="btn-settings" onclick="openSettingsModal()">⚙</button>
-        <h1 class="menu-title">美容室CLan<br>からの挑戦状</h1>
-        <div class="menu-difficulty-list">
-            <button class="btn-menu" onclick="handleMenuGenerate('easy')">初級</button>
-            <button class="btn-menu" onclick="handleMenuGenerate('normal')">中級</button>
-            <button class="btn-menu" onclick="handleMenuGenerate('hard')">上級</button>
-            <button class="btn-menu" onclick="handleMenuGenerate('expert')">超級</button>
+    <!-- メインコンテンツ領域（JSで画面切替） -->
+    <main id="main-content">
+      
+      <!-- 1. メインメニュー画面 -->
+      <section id="screen-menu" class="screen active">
+        <h2 class="menu-title">メインメニュー</h2>
+        <div class="menu-buttons">
+          <button id="btn-tower" class="btn btn-primary">🏰 タワーモード</button>
+          <button id="btn-normal" class="btn">🎮 通常モード</button>
+          <button id="btn-custom" class="btn">💾 保存モード</button>
+          <button id="btn-dictionary" class="btn">📖 技図鑑</button>
+          <button id="btn-shop" class="btn">🛒 ショップ</button>
         </div>
-        <button class="btn-menu-load-trigger" onclick="openLoadModal()">保存したステージから読込</button>
-    </div>
+      </section>
 
-    <div id="game-screen" class="screen-container" style="display: none;">
-        <button class="btn-settings" onclick="openSettingsModal()">⚙</button>
-        
-        <div class="status-bar">
-            <div class="status-row-top">
-                <span id="status-difficulty" class="badge">中級</span>
-                <span id="status-timer">⏱ 00:00</span>
-                <span id="status-score">SCORE: 0</span>
-            </div>
-            <div class="status-row-bottom">
-                <span id="status-miss">ミス: 0</span>
-                <span id="status-combo">0 COMBO</span>
-            </div>
-        </div>
-
-        <div class="grid-wrapper">
-            <div class="grid" id="sudoku-grid"></div>
-            <div class="pause-overlay" id="pause-screen">
-                <div class="pause-title">PAUSED</div>
-                <button class="btn-resume" onclick="resumeGame()">RESUME</button>
-            </div>
+      <!-- 2. パズルプレイ画面（共通盤面UI） -->
+      <section id="screen-game" class="screen">
+        <!-- 階層 / 難易度・モード情報表示 -->
+        <div class="game-info">
+          <button id="btn-back-menu" class="btn-small">← メニューへ</button>
+          <span id="mode-title">タワーモード - 1階</span>
         </div>
 
-        <div class="error-message" id="error-text"></div>
-
-        <div class="keypad-container" id="num-pad-area">
-            
-            <div class="left-pad-area">
-                <div class="memo-pad">
-                    <div class="pad-title">MEMO</div>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(1)">1</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(2)">2</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(3)">3</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(4)">4</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(5)">5</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(6)">6</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(7)">7</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(8)">8</button>
-                    <button class="btn-memo-num" onclick="pressMemoNumber(9)">9</button>
-                </div>
-                
-                <button class="btn-hint" onclick="triggerHint()">ヒント</button>
-            </div>
-
-            <div class="main-pad">
-                <div class="pad-title">INPUT</div>
-                <button class="num-btn" id="btn-num-1" onclick="pressMainNumber(1)">1<span class="num-count" id="count-1">0/9</span></button>
-                <button class="num-btn" id="btn-num-2" onclick="pressMainNumber(2)">2<span class="num-count" id="count-2">0/9</span></button>
-                <button class="num-btn" id="btn-num-3" onclick="pressMainNumber(3)">3<span class="num-count" id="count-3">0/9</span></button>
-                <button class="num-btn" id="btn-num-4" onclick="pressMainNumber(4)">4<span class="num-count" id="count-4">0/9</span></button>
-                <button class="num-btn" id="btn-num-5" onclick="pressMainNumber(5)">5<span class="num-count" id="count-5">0/9</span></button>
-                <button class="num-btn" id="btn-num-6" onclick="pressMainNumber(6)">6<span class="num-count" id="count-6">0/9</span></button>
-                <button class="num-btn" id="btn-num-7" onclick="pressMainNumber(7)">7<span class="num-count" id="count-7">0/9</span></button>
-                <button class="num-btn" id="btn-num-8" onclick="pressMainNumber(8)">8<span class="num-count" id="count-8">0/9</span></button>
-                <button class="num-btn" id="btn-num-9" onclick="pressMainNumber(9)">9<span class="num-count" id="count-9">0/9</span></button>
-            </div>
-
+        <!-- 9x9 ナンプレ盤面コンテナ -->
+        <div id="board-container" class="board-container">
+          <!-- board.js にて動的に 81 マスが生成されます -->
         </div>
-    </div>
 
-    <div class="modal-overlay" id="settings-modal">
-        <div class="modal-content">
-            <div class="modal-title">SETTINGS</div>
-
-            <div class="setting-item" id="setting-item-mode">
-                <div class="setting-label">プレイモード</div>
-                <div class="mode-select-buttons">
-                    <button id="btn-mode-blind" class="btn-setting-action active" onclick="setJudgeMode('blind')">ブラインド</button>
-                    <button id="btn-mode-assist" class="btn-setting-action" onclick="setJudgeMode('assist')">アシスト</button>
-                </div>
-            </div>
-
-            <div class="setting-item">
-                <div class="setting-label">テーマカラー（準備中）</div>
-                <div class="color-slots">
-                    <span class="color-dot active" style="background: #0066cc;"></span>
-                    <span class="color-dot" style="background: #22c55e;"></span>
-                    <span class="color-dot" style="background: #ef4444;"></span>
-                    <span class="color-dot" style="background: #a855f7;"></span>
-                </div>
-            </div>
-
-            <div id="game-actions-area" style="display: none; border-top: 1px solid var(--border); margin-top: 15px; padding-top: 15px; flex-direction: column; gap: 8px;">
-                <button class="btn-setting-action" style="border-color: var(--primary); color: var(--primary);" onclick="triggerSave()">この問題を保存する</button>
-                <button class="btn-setting-action" onclick="triggerReset()">最初から解き直す</button>
-                <button class="btn-setting-action" style="border-color: var(--error); color: var(--error);" onclick="triggerQuit()">メニューに戻る</button>
-            </div>
-
-            <button class="btn-modal-close" onclick="closeSettingsModal()">閉じる</button>
+        <!-- 操作パネル（数字入力・メモ・仮置き（IF）・消去・戻る） -->
+        <div class="controls">
+          <div class="action-buttons">
+            <button id="btn-memo" class="btn-action">メモ [OFF]</button>
+            <button id="btn-if-mode" class="btn-action">仮置き(IF)</button>
+            <button id="btn-erase" class="btn-action">消去</button>
+            <button id="btn-undo" class="btn-action">1手戻す</button>
+          </div>
+          <!-- 1〜9の数字選択ボタン -->
+          <div class="numpad">
+            <button class="num-btn" data-value="1">1</button>
+            <button class="num-btn" data-value="2">2</button>
+            <button class="num-btn" data-value="3">3</button>
+            <button class="num-btn" data-value="4">4</button>
+            <button class="num-btn" data-value="5">5</button>
+            <button class="num-btn" data-value="6">6</button>
+            <button class="num-btn" data-value="7">7</button>
+            <button class="num-btn" data-value="8">8</button>
+            <button class="num-btn" data-value="9">9</button>
+          </div>
         </div>
-    </div>
+      </section>
 
-    <div class="modal-overlay" id="load-modal">
-        <div class="modal-content">
-            <div class="modal-title">SAVE DATA</div>
-            <div class="save-list" id="modal-save-list"></div>
-            <button class="btn-modal-close secondary" onclick="closeLoadModal()">閉じる</button>
+      <!-- 3. 技図鑑画面 -->
+      <section id="screen-dictionary" class="screen">
+        <h2>📖 技図鑑</h2>
+        <div id="dictionary-list" class="dictionary-list">
+          <!-- JSで解放された技の一覧を動的生成 -->
         </div>
-    </div>
+        <button class="btn-back btn">戻る</button>
+      </section>
 
-    <div class="clear-overlay" id="clear-screen">
-        <div class="clear-content">
-            <div class="clear-title">CLEAR!</div>
-            <div class="clear-msg"></div>
-            <button class="clear-btn-close" onclick="closeClearScreen()">CLOSE</button>
-        </div>
-    </div>
+    </main>
+  </div>
 
-    <script src="script.js"></script>
+  <!-- スクリプトの読み込み（ES Modules仕様） -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

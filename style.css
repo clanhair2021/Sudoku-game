@@ -1,167 +1,115 @@
 /* ==========================================
-   1. CSS変数（ライト/ダークテーマ定義）[span_2](start_span)[span_2](end_span)
+   1. CSS変数（テーマ切替）
    ========================================== */
 :root {
-  /* ライトテーマ（標準）[span_3](start_span)[span_3](end_span) */
   --bg-color: #fcfcfc;
   --text-color: #222222;
   --sub-text-color: #666666;
   --border-color: #333333;
-  --panel-bg: rgba(255, 255, 255, 0.92);
+  --panel-bg: rgba(255, 255, 255, 0.85); /* backdrop-filter用に少し透明に */
+  --btn-bg: #111111;
+  --btn-text: #ffffff;
+  --btn-shadow: #555555;
   --hover-bg: rgba(0, 0, 0, 0.05);
-  
-  /* アクセントカラー（モノクロ基調に合わせたグレー系） */
-  --accent-color: #555555;
   --selected-cell: #dddddd;
 }
 
 body[data-theme="dark"] {
-  /* ダークテーマ（上書き）[span_4](start_span)[span_4](end_span) */
   --bg-color: #121212;
   --text-color: #ffffff;
   --sub-text-color: #aaaaaa;
   --border-color: #cccccc;
-  --panel-bg: rgba(30, 30, 30, 0.92);
+  --panel-bg: rgba(20, 20, 20, 0.85);
+  --btn-bg: #eeeeee;
+  --btn-text: #111111;
+  --btn-shadow: #888888;
   --hover-bg: rgba(255, 255, 255, 0.1);
-  
-  --accent-color: #aaaaaa;
   --selected-cell: #333333;
 }
 
 /* ==========================================
-   2. 基本設定・全体レイアウト
+   2. 点滅エフェクト (カクつくレトロ点滅)
    ========================================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.retro-blink {
+  animation: retroBlink 1.0s steps(1) infinite; /* steps(1)で即時切り替え */
 }
 
-body {
-  /* レトロフォントの指定（Google Fonts等を想定）[span_5](start_span)[span_5](end_span) */
-  font-family: 'Press Start 2P', monospace, sans-serif;
-  background-color: var(--bg-color); /* 変数を使用[span_6](start_span)[span_6](end_span) */
-  color: var(--text-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-#app {
-  width: 100%;
-  max-width: 480px;
-  padding: 16px;
-  background-color: var(--panel-bg);
-  border: 2px solid var(--border-color); /* モノクロの枠線[span_7](start_span)[span_7](end_span) */
-  border-radius: 8px;
-  position: relative; /* CRTオーバーレイの基準 */
+@keyframes retroBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
 }
 
 /* ==========================================
-   3. ヘッダー・ボタン（レトロ風）
+   3. 押し込み式の立体ボタン
    ========================================== */
-.game-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  border-bottom: 2px dashed var(--border-color); /* 破線でレトロ感 */
-  padding-bottom: 10px;
-}
-
-.game-title {
-  font-size: 1.2rem;
-  letter-spacing: 2px;
-}
-
-.btn {
-  padding: 12px;
-  margin-bottom: 10px;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: bold;
-  background-color: transparent;
-  color: var(--text-color);
+.btn-retro {
+  position: relative;
+  top: 0;
+  background: var(--btn-bg);
+  color: var(--btn-text);
   border: 2px solid var(--border-color);
+  box-shadow: 0 5px 0px var(--btn-shadow), 0 7px 10px rgba(0,0,0,0.3);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 12px 16px;
   cursor: pointer;
-  transition: all 0.1s ease; /* 素早い反応[span_8](start_span)[span_8](end_span) */
+  transition: all 0.1s ease; /* キビキビした反応時間 */
   text-transform: uppercase;
 }
 
-/* 押し込み感のある立体ボタン効果[span_9](start_span)[span_9](end_span) */
-.btn:active {
-  transform: translateY(2px) scale(0.98); /* クリック時の縮小[span_10](start_span)[span_10](end_span) */
-  background-color: var(--hover-bg);
+.btn-retro:hover {
+  top: 2px;
+  box-shadow: 0 3px 0px var(--btn-shadow), 0 4px 6px rgba(0,0,0,0.3);
 }
 
-.btn:hover {
-  background-color: var(--hover-bg);
+.btn-retro:active {
+  top: 5px; /* 厚み分完全に押し込まれる */
+  box-shadow: 0 0px 0px var(--btn-shadow), 0 1px 2px rgba(0,0,0,0.3);
 }
 
 /* ==========================================
-   4. ナンプレ盤面（モノクロ対応）
+   4. すりガラスモーダル (設定や中断画面用)
    ========================================== */
-.board-container {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  grid-template-rows: repeat(9, 1fr);
-  gap: 1px;
-  background-color: var(--border-color); /* マスの仕切り線 */
-  border: 4px solid var(--border-color);
-  aspect-ratio: 1 / 1;
-  margin: 16px 0;
-}
-
-.cell {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  display: flex;
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
-  cursor: pointer;
-  user-select: none;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
-.cell[data-col="2"], .cell[data-col="5"] {
-  border-right: 2px solid var(--border-color);
-}
-.cell[data-row="2"], .cell[data-row="5"] {
-  border-bottom: 2px solid var(--border-color);
+.modal-overlay.active {
+  display: flex;
 }
 
-.cell.selected {
-  background-color: var(--selected-cell);
+.modal-content {
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px); /* 背後をぼかす */
+  -webkit-backdrop-filter: blur(8px); /* Safari対応 */
+  border: 2px solid var(--border-color);
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
 
 /* ==========================================
-   5. アニメーション & CRT効果
+   5. CRT走査線 ＆ 全体レイアウト
    ========================================== */
-.screen {
-  display: none;
-  animation: fadeIn 0.25s ease-in-out; /* 下からふわっと表示[span_11](start_span)[span_11](end_span) */
-}
-.screen.active {
-  display: block;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); } /* 少し下から[span_12](start_span)[span_12](end_span) */
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* CRT（ブラウン管）走査線エフェクト[span_13](start_span)[span_13](end_span) */
 #crt-overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  pointer-events: none; /* クリックを通過させる[span_14](start_span)[span_14](end_span) */
+  pointer-events: none;
   z-index: 999;
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.08) 50% /* 薄い黒で横縞を作る[span_15](start_span)[span_15](end_span) */
+    rgba(0, 0, 0, 0.08) 50%
   );
-  background-size: 100% 4px; /* 4pxごとに繰り返し[span_16](start_span)[span_16](end_span) */
+  background-size: 100% 4px;
 }

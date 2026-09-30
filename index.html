@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SUDOKU MASTER</title>
   <link rel="stylesheet" href="style.css">
-  <!-- レトロフォントの読み込み例（必要に応じて） -->
+  <!-- レトロフォントの読み込み -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-<!-- 初期状態をダークテーマにする場合は data-theme="dark" を付与[span_17](start_span)[span_17](end_span) -->
+<!-- 初期状態をダークテーマにする場合 data-theme="dark" を付与 -->
 <body data-theme="dark">
   
   <div id="app">
+    <!-- ヘッダーエリア -->
     <header class="game-header">
       <h1 class="game-title">SUDOKU</h1>
       <div class="status-bar">
@@ -21,8 +22,10 @@
       </div>
     </header>
 
+    <!-- メインコンテンツ（JSで画面切替を行う領域） -->
     <main id="main-content">
-      <!-- メインメニュー -->
+      
+      <!-- 1. メインメニュー画面 -->
       <section id="screen-menu" class="screen active">
         <!-- レトロな点滅メッセージ -->
         <p class="retro-blink" style="text-align: center; margin-bottom: 20px; font-size: 0.8rem;">
@@ -35,19 +38,10 @@
           <button id="btn-custom" class="btn-retro">[ SAVE / LOAD ]</button>
           <button id="btn-dictionary" class="btn-retro">[ DICTIONARY ]</button>
           <button id="btn-shop" class="btn-retro">[ SHOP ]</button>
-       </div>
-     </section>
-   </main>
+        </div>
+      </section>
 
-   <!-- すりガラス風 ポーズ・ダイアログモーダルの準備 -->
-   <div id="pause-modal" class="modal-overlay">
-     <div class="modal-content">
-       <h2 style="margin-bottom: 16px;">PAUSED</h2>
-       <button id="btn-resume" class="btn-retro">RESUME</button>
-     </div>
-   </div>
-
-      <!-- パズルプレイ画面 -->
+      <!-- 2. パズルプレイ画面 -->
       <section id="screen-game" class="screen">
         <div class="game-info" style="display:flex; justify-content:space-between; margin-bottom:10px;">
           <button id="btn-back-menu" class="btn" style="padding:6px;">< BACK</button>
@@ -55,7 +49,7 @@
         </div>
 
         <div id="board-container" class="board-container">
-          <!-- JS生成 -->
+          <!-- JSで9x9マスを生成 -->
         </div>
 
         <div class="controls">
@@ -66,7 +60,6 @@
             <button id="btn-undo" class="btn">UNDO</button>
           </div>
           <div class="numpad" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:4px;">
-            <!-- JSで1〜9ボタンを生成、またはHTMLベタ書き -->
             <button class="btn num-btn" data-value="1">1</button>
             <button class="btn num-btn" data-value="2">2</button>
             <button class="btn num-btn" data-value="3">3</button>
@@ -81,9 +74,17 @@
       </section>
 
     </main>
+  </div> <!-- /#app -->
+
+  <!-- すりガラス風 ポーズ・ダイアログモーダル（画面全体のオーバーレイとして最背面に配置） -->
+  <div id="pause-modal" class="modal-overlay">
+    <div class="modal-content">
+      <h2 style="margin-bottom: 16px;">PAUSED</h2>
+      <button id="btn-resume" class="btn-retro">RESUME</button>
+    </div>
   </div>
 
-  <!-- CRT（ブラウン管）走査線オーバーレイ[span_18](start_span)[span_18](end_span) -->
+  <!-- CRT（ブラウン管）走査線オーバーレイ -->
   <div id="crt-overlay"></div>
 
   <script type="module" src="js/main.js"></script>

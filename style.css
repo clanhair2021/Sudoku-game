@@ -7,7 +7,7 @@
   --text-main: #222222;
   --text-muted: #666666;
   --border: #333333;
-  --panel-bg: rgba(255, 255, 255, 0.1);
+  --panel-bg: rgba(255, 255, 255, 0.2);
   --card-bg: rgba(255, 255, 255, 0.85);
   --hover-bg: rgba(0, 0, 0, 0.05);
   --selected-cell: #dddddd;
@@ -27,7 +27,7 @@ body[data-theme="dark"],
 }
 
 /* ===================================================
-   2. body & 背景画像設定（透過決定版）
+   2. body & 背景画像（ご提示の数字イラスト）設定[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
    =================================================== */
 * {
   box-sizing: border-box;
@@ -49,7 +49,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* 最背面固定の背景画像 */
+/* 最背面固定の背景イラスト[span_12](start_span)[span_12](end_span) */
 body::before {
   content: "";
   position: fixed;
@@ -62,24 +62,27 @@ body::before {
   background-repeat: no-repeat;
   pointer-events: none;
   z-index: -1;
+  transition: opacity 0.3s ease;
 }
 
-/* ライトモード時の背景画像（黒線） */
+/* ライトモード時背景[span_13](start_span)[span_13](end_span)[span_14](start_span)[span_14](end_span) */
 body:not([data-theme="dark"])::before,
 [data-theme="light"] body::before {
-  background-image: url("../sudoku-icon.png");
-  opacity: 0.3;
+  background-image: url("sudoku-icon-white.png"); /* 黒背景用に反転/黒画像を指定可能 */
+  filter: invert(1); /* 白線を黒線に反転表示 */
+  opacity: 0.25;
 }
 
-/* ダークモード時の背景画像（白線） */
+/* ダークモード時背景[span_15](start_span)[span_15](end_span)[span_16](start_span)[span_16](end_span) */
 [data-theme="dark"] body::before,
 body[data-theme="dark"]::before {
-  background-image: url("../sudoku-icon-white.png");
-  opacity: 0.6;
+  background-image: url("sudoku-icon-white.png");
+  filter: none;
+  opacity: 0.45;
 }
 
 /* ===================================================
-   3. メイン枠（container）＆ レイアウト
+   3. メイン枠（container）＆ タイトルロゴ画像[span_17](start_span)[span_17](end_span)[span_18](start_span)[span_18](end_span)
    =================================================== */
 .container {
   width: 100%;
@@ -95,10 +98,31 @@ body[data-theme="dark"]::before {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: hidden; /* 子要素のはみ出しをカット */
+  overflow: hidden;
 }
 
-/* ヘッダー & ステータスバー */
+/* タイトルロゴエリア[span_19](start_span)[span_19](end_span)[span_20](start_span)[span_20](end_span) */
+.title-logo-wrapper {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.title-image {
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* ライトモード時にタイトルロゴを白黒反転する場合[span_21](start_span)[span_21](end_span)[span_22](start_span)[span_22](end_span) */
+body:not([data-theme="dark"]) .title-image {
+  filter: invert(1) drop-shadow(2px 2px 4px rgba(255, 255, 255, 0.5));
+}
+
+/* ヘッダー & ステータスバー[span_23](start_span)[span_23](end_span) */
 .game-header {
   display: flex;
   justify-content: space-between;
@@ -122,7 +146,7 @@ body[data-theme="dark"]::before {
   color: var(--text-main);
 }
 
-/* 右上設定ギアボタン */
+/* 右上設定ギアボタン[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span) */
 .settings-btn {
   position: fixed;
   top: 15px;
@@ -143,11 +167,11 @@ body[data-theme="dark"]::before {
 }
 
 .settings-btn:hover {
-  transform: rotate(90s);
+  transform: rotate(90deg);
 }
 
 /* ===================================================
-   4. 画面切替 ＆ アニメーション
+   4. 画面切替 ＆ アニメーション[span_26](start_span)[span_26](end_span)
    =================================================== */
 .screen {
   display: none !important;
@@ -163,9 +187,9 @@ body[data-theme="dark"]::before {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 点滅テキスト */
+/* 点滅テキスト[span_27](start_span)[span_27](end_span)[span_28](start_span)[span_28](end_span) */
 .retro-start-text {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: var(--text-main);
   letter-spacing: 1px;
   margin-bottom: 16px;
@@ -178,7 +202,7 @@ body[data-theme="dark"]::before {
 }
 
 /* ===================================================
-   5. メニューボタン ＆ カーソルアニメーション
+   5. メニューボタン ＆ カーソルアニメーション[span_29](start_span)[span_29](end_span)
    =================================================== */
 .menu-difficulty-list {
   display: flex;
@@ -209,7 +233,6 @@ body[data-theme="dark"]::before {
   position: relative;
 }
 
-/* ホバー時に出現・点滅する「▶」矢印 */
 .btn-menu::before {
   content: "▶";
   position: absolute;
@@ -278,7 +301,7 @@ body[data-theme="dark"]::before {
 }
 
 /* ===================================================
-   7. CRT走査線 ＆ モーダル設定
+   7. CRT走査線 ＆ モーダル設定[span_30](start_span)[span_30](end_span)[span_31](start_span)[span_31](end_span)
    =================================================== */
 #crt-overlay {
   position: fixed; top: 0; left: 0;

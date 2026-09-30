@@ -22,17 +22,30 @@
     </header>
 
     <main id="main-content">
-      
       <!-- メインメニュー -->
       <section id="screen-menu" class="screen active">
-        <div class="menu-buttons">
-          <button id="btn-tower" class="btn">[ TOWER MODE ]</button>
-          <button id="btn-normal" class="btn">[ NORMAL MODE ]</button>
-          <button id="btn-custom" class="btn">[ SAVE / LOAD ]</button>
-          <button id="btn-dictionary" class="btn">[ DICTIONARY ]</button>
-          <button id="btn-shop" class="btn">[ SHOP ]</button>
-        </div>
-      </section>
+        <!-- レトロな点滅メッセージ -->
+        <p class="retro-blink" style="text-align: center; margin-bottom: 20px; font-size: 0.8rem;">
+          - PRESS ANY BUTTON -
+        </p>
+
+        <div class="menu-buttons" style="display:flex; flex-direction:column; gap:16px;">
+          <button id="btn-tower" class="btn-retro">[ TOWER MODE ]</button>
+          <button id="btn-normal" class="btn-retro">[ NORMAL MODE ]</button>
+          <button id="btn-custom" class="btn-retro">[ SAVE / LOAD ]</button>
+          <button id="btn-dictionary" class="btn-retro">[ DICTIONARY ]</button>
+          <button id="btn-shop" class="btn-retro">[ SHOP ]</button>
+       </div>
+     </section>
+   </main>
+
+   <!-- すりガラス風 ポーズ・ダイアログモーダルの準備 -->
+   <div id="pause-modal" class="modal-overlay">
+     <div class="modal-content">
+       <h2 style="margin-bottom: 16px;">PAUSED</h2>
+       <button id="btn-resume" class="btn-retro">RESUME</button>
+     </div>
+   </div>
 
       <!-- パズルプレイ画面 -->
       <section id="screen-game" class="screen">

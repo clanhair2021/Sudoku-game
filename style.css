@@ -1,37 +1,34 @@
-/* ==========================================
-   1. CSS変数（ライト / ダークテーマ定義）[span_2](start_span)[span_2](end_span)
-   ========================================== */
+/* ===================================================
+   1. CSS変数（テーマ管理）
+   =================================================== */
 :root {
-  /* ライトテーマ（標準）[span_3](start_span)[span_3](end_span) */
+  /* ライトモード時 */
   --bg-color: #fcfcfc;
-  --text-color: #222222;
-  --sub-text-color: #666666;
-  --border-color: #333333;
-  --panel-bg: rgba(255, 255, 255, 0.85); /* backdrop-filter用に半透明 */
-  --btn-bg: #111111;
-  --btn-text: #ffffff;
-  --btn-shadow: #555555;
+  --text-main: #222222;
+  --text-muted: #666666;
+  --border: #333333;
+  --panel-bg: rgba(255, 255, 255, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.85);
   --hover-bg: rgba(0, 0, 0, 0.05);
   --selected-cell: #dddddd;
 }
 
-body[data-theme="dark"] {
-  /* ダークテーマ（上書き）[span_4](start_span)[span_4](end_span) */
+body[data-theme="dark"],
+[data-theme="dark"] {
+  /* ダークモード時 */
   --bg-color: #121212;
-  --text-color: #ffffff;
-  --sub-text-color: #aaaaaa;
-  --border-color: #cccccc;
-  --panel-bg: rgba(20, 20, 20, 0.85);
-  --btn-bg: #eeeeee;
-  --btn-text: #111111;
-  --btn-shadow: #888888;
+  --text-main: #ffffff;
+  --text-muted: #aaaaaa;
+  --border: #cccccc;
+  --panel-bg: rgba(18, 18, 18, 0.8);
+  --card-bg: rgba(30, 30, 30, 0.85);
   --hover-bg: rgba(255, 255, 255, 0.1);
   --selected-cell: #333333;
 }
 
-/* ==========================================
-   2. 基本設定・全体レイアウト
-   ========================================== */
+/* ===================================================
+   2. body & 背景画像設定（透過決定版）
+   =================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -39,58 +36,126 @@ body[data-theme="dark"] {
 }
 
 body {
-  font-family: 'Press Start 2P', monospace, sans-serif; /* レトロドットフォント[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span) */
+  font-family: 'Press Start 2P', monospace, sans-serif;
   background-color: var(--bg-color);
-  color: var(--text-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  align-items: flex-start;
+  position: relative;
+  z-index: 0;
   transition: background-color 0.3s, color 0.3s;
 }
 
-#app {
-  width: 100%;
-  max-width: 480px;
-  padding: 16px;
-  background-color: var(--panel-bg);
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden; /* 子要素の画面外はみ出しを確実にカット */
+/* 最背面固定の背景画像 */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: contain;
+  background-position: center top;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: -1;
 }
 
-/* ヘッダー */
+/* ライトモード時の背景画像（黒線） */
+body:not([data-theme="dark"])::before,
+[data-theme="light"] body::before {
+  background-image: url("../sudoku-icon.png");
+  opacity: 0.3;
+}
+
+/* ダークモード時の背景画像（白線） */
+[data-theme="dark"] body::before,
+body[data-theme="dark"]::before {
+  background-image: url("../sudoku-icon-white.png");
+  opacity: 0.6;
+}
+
+/* ===================================================
+   3. メイン枠（container）＆ レイアウト
+   =================================================== */
+.container {
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 15px;
+  background-color: var(--panel-bg) !important;
+  transition: background-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden; /* 子要素のはみ出しをカット */
+}
+
+/* ヘッダー & ステータスバー */
 .game-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  border-bottom: 2px dashed var(--border-color); /* 破線でレトロ感[span_7](start_span)[span_7](end_span) */
   padding-bottom: 10px;
+  border-bottom: 2px dashed var(--border);
 }
 
 .game-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   letter-spacing: 2px;
 }
 
 .status-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--card-bg);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  color: var(--text-main);
 }
 
-/* ==========================================
-   3. 画面切替の制御（はみ出し防止）
-   ========================================== */
+/* 右上設定ギアボタン */
+.settings-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  transition: transform 0.3s ease;
+}
+
+.settings-btn svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--text-main);
+}
+
+.settings-btn:hover {
+  transform: rotate(90s);
+}
+
+/* ===================================================
+   4. 画面切替 ＆ アニメーション
+   =================================================== */
 .screen {
-  display: none !important; /* 基本は完全に非表示 */
+  display: none !important;
 }
 
 .screen.active {
-  display: block !important; /* activeクラスがついた画面だけ表示 */
-  animation: fadeIn 0.25s ease-in-out; /* 0.25秒の画面切り替えフェード[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span) */
+  display: block !important;
+  animation: fadeIn 0.25s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -98,9 +163,13 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* レトロなカクつく点滅アニメーション[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span) */
-.retro-blink {
-  animation: retroBlink 1.0s steps(1) infinite; /* steps(1)で即時切り替え[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span) */
+/* 点滅テキスト */
+.retro-start-text {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  animation: retroBlink 1.0s steps(1) infinite;
 }
 
 @keyframes retroBlink {
@@ -108,115 +177,117 @@ body {
   50%      { opacity: 0; }
 }
 
-/* ==========================================
-   4. ボタンデザイン（立体ボタン ＆ フラットボタン）
-   ========================================== */
-/* 押し込み感のある立体ボタン[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span) */
-.btn-retro {
+/* ===================================================
+   5. メニューボタン ＆ カーソルアニメーション
+   =================================================== */
+.menu-difficulty-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.btn-menu, .back-btn, .modal-btn, .btn {
+  font-family: 'Press Start 2P', monospace !important;
+  background: var(--bg-color) !important;
+  border: 2px solid var(--text-main) !important;
+  color: var(--text-main) !important;
+  cursor: pointer;
+  transition: all 0.2s ease !important;
+}
+
+.btn-menu {
+  font-size: 0.7rem !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100%;
+  padding: 12px 16px !important;
+  border-radius: 8px !important;
   position: relative;
-  top: 0;
-  background: var(--btn-bg);
-  color: var(--btn-text);
-  border: 2px solid var(--border-color);
-  box-shadow: 0 5px 0px var(--btn-shadow), 0 7px 10px rgba(0,0,0,0.3);
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: bold;
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: all 0.1s ease; /* キビキビした反応時間[span_16](start_span)[span_16](end_span) */
-  text-transform: uppercase;
 }
 
-.btn-retro:hover {
-  top: 2px;
-  box-shadow: 0 3px 0px var(--btn-shadow), 0 4px 6px rgba(0,0,0,0.3);
-}
-
-.btn-retro:active {
-  top: 5px; /* 押したときに物理的に沈み込む[span_17](start_span)[span_17](end_span)[span_18](start_span)[span_18](end_span) */
-  box-shadow: 0 0px 0px var(--btn-shadow), 0 1px 2px rgba(0,0,0,0.3);
-}
-
-/* 操作パネル用標準ボタン */
-.btn {
-  font-family: inherit;
-  background: transparent;
-  color: var(--text-color);
-  border: 2px solid var(--border-color);
-  padding: 8px;
+/* ホバー時に出現・点滅する「▶」矢印 */
+.btn-menu::before {
+  content: "▶";
+  position: absolute;
+  left: 12px;
+  opacity: 0;
+  color: var(--text-main);
   font-size: 0.75rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.1s;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
 }
 
-.btn:hover {
-  background-color: var(--hover-bg);
+.btn-menu:hover, .btn-menu:focus, .btn-menu:active,
+.back-btn:hover, .modal-btn:hover, .btn:hover {
+  background: var(--text-main) !important;
+  color: var(--bg-color) !important;
 }
 
-.btn.active {
-  background-color: var(--text-color);
-  color: var(--bg-color);
+.btn-menu:hover::before, .btn-menu:focus::before {
+  opacity: 1;
+  animation: cursorBlink 0.6s infinite alternate;
 }
 
-/* ==========================================
-   5. ナンプレ盤面（モノクロレイアウト）
-   ========================================== */
+@keyframes cursorBlink {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(4px); }
+}
+
+.back-btn, .modal-btn {
+  border-radius: 8px;
+  font-size: 0.6rem !important;
+  padding: 8px 14px;
+}
+
+/* ===================================================
+   6. 盤面 ＆ 操作テンキー
+   =================================================== */
 .board-container {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
   gap: 1px;
-  background-color: var(--border-color);
-  border: 4px solid var(--border-color);
+  background-color: var(--border);
+  border: 3px solid var(--border);
   aspect-ratio: 1 / 1;
-  margin: 16px 0;
+  margin: 12px 0;
 }
 
 .cell {
   background-color: var(--bg-color);
-  color: var(--text-color);
+  color: var(--text-main);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   user-select: none;
 }
 
-/* 3x3ブロックごとの太線表示 */
-.cell[data-col="2"], .cell[data-col="5"] {
-  border-right: 2px solid var(--border-color);
-}
-.cell[data-row="2"], .cell[data-row="5"] {
-  border-bottom: 2px solid var(--border-color);
+.cell[data-col="2"], .cell[data-col="5"] { border-right: 2px solid var(--border); }
+.cell[data-row="2"], .cell[data-row="5"] { border-bottom: 2px solid var(--border); }
+.cell.selected { background-color: var(--selected-cell); }
+
+.btn {
+  padding: 8px 4px;
+  font-size: 0.65rem !important;
 }
 
-.cell.selected {
-  background-color: var(--selected-cell);
+/* ===================================================
+   7. CRT走査線 ＆ モーダル設定
+   =================================================== */
+#crt-overlay {
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 999;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%);
+  background-size: 100% 4px;
 }
 
-/* 初期数字・仮置き・メモテキストの見た目 */
-.cell.initial {
-  font-weight: bold;
-}
-
-.cell.if-mode {
-  text-decoration: underline; /* 仮置き数字の差別化 */
-}
-
-.cell.memo-text {
-  font-size: 0.55rem;
-  color: var(--sub-text-color);
-  word-break: break-all;
-  line-height: 1;
-}
-
-/* ==========================================
-   6. すりガラスモーダル ＆ CRT走査線エフェクト[span_19](start_span)[span_19](end_span)[span_20](start_span)[span_20](end_span)
-   ========================================== */
-/* すりガラス風パネル（ポーズ画面など）[span_21](start_span)[span_21](end_span)[span_22](start_span)[span_22](end_span) */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -226,7 +297,6 @@ body {
   z-index: 100;
   justify-content: center;
   align-items: center;
-  animation: fadeIn 0.2s ease-in-out;
 }
 
 .modal-overlay.active {
@@ -234,26 +304,10 @@ body {
 }
 
 .modal-content {
-  background: var(--panel-bg);
-  backdrop-filter: blur(8px); /* 背後をぼかす[span_23](start_span)[span_23](end_span)[span_24](start_span)[span_24](end_span) */
-  -webkit-backdrop-filter: blur(8px);
-  border: 2px solid var(--border-color);
-  padding: 24px;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   text-align: center;
-}
-
-/* CRT（ブラウン管）走査線オーバーレイ[span_25](start_span)[span_25](end_span)[span_26](start_span)[span_26](end_span) */
-#crt-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  pointer-events: none; /* クリックを阻害しない[span_27](start_span)[span_27](end_span)[span_28](start_span)[span_28](end_span) */
-  z-index: 999;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.08) 50% /* 薄い走査線[span_29](start_span)[span_29](end_span)[span_30](start_span)[span_30](end_span) */
-  );
-  background-size: 100% 4px;
+  min-width: 240px;
 }

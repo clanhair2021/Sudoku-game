@@ -3,83 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>新感覚ナンプレゲーム</title>
+  <title>SUDOKU MASTER</title>
   <link rel="stylesheet" href="style.css">
+  <!-- レトロフォントの読み込み例（必要に応じて） -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-<body>
+<!-- 初期状態をダークテーマにする場合は data-theme="dark" を付与[span_17](start_span)[span_17](end_span) -->
+<body data-theme="dark">
+  
   <div id="app">
-    <!-- ヘッダー（タイトル・TP表示・テーマ切替など） -->
     <header class="game-header">
-      <h1 class="game-title">ナンプレ Master</h1>
+      <h1 class="game-title">SUDOKU</h1>
       <div class="status-bar">
-        <span id="tp-display">TP: 0</span>
+        <span id="tp-display">TP:0000</span>
+        <!-- テーマ切替テスト用ボタン -->
+        <button id="btn-theme-toggle" class="btn" style="padding: 4px; font-size:0.6rem;">THEME</button>
       </div>
     </header>
 
-    <!-- メインコンテンツ領域（JSで画面切替） -->
     <main id="main-content">
       
-      <!-- 1. メインメニュー画面 -->
+      <!-- メインメニュー -->
       <section id="screen-menu" class="screen active">
-        <h2 class="menu-title">メインメニュー</h2>
         <div class="menu-buttons">
-          <button id="btn-tower" class="btn btn-primary">🏰 タワーモード</button>
-          <button id="btn-normal" class="btn">🎮 通常モード</button>
-          <button id="btn-custom" class="btn">💾 保存モード</button>
-          <button id="btn-dictionary" class="btn">📖 技図鑑</button>
-          <button id="btn-shop" class="btn">🛒 ショップ</button>
+          <button id="btn-tower" class="btn">[ TOWER MODE ]</button>
+          <button id="btn-normal" class="btn">[ NORMAL MODE ]</button>
+          <button id="btn-custom" class="btn">[ SAVE / LOAD ]</button>
+          <button id="btn-dictionary" class="btn">[ DICTIONARY ]</button>
+          <button id="btn-shop" class="btn">[ SHOP ]</button>
         </div>
       </section>
 
-      <!-- 2. パズルプレイ画面（共通盤面UI） -->
+      <!-- パズルプレイ画面 -->
       <section id="screen-game" class="screen">
-        <!-- 階層 / 難易度・モード情報表示 -->
-        <div class="game-info">
-          <button id="btn-back-menu" class="btn-small">← メニューへ</button>
-          <span id="mode-title">タワーモード - 1階</span>
+        <div class="game-info" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <button id="btn-back-menu" class="btn" style="padding:6px;">< BACK</button>
+          <span id="mode-title" style="align-self:center;">TOWER - FL.01</span>
         </div>
 
-        <!-- 9x9 ナンプレ盤面コンテナ -->
         <div id="board-container" class="board-container">
-          <!-- board.js にて動的に 81 マスが生成されます -->
+          <!-- JS生成 -->
         </div>
 
-        <!-- 操作パネル（数字入力・メモ・仮置き（IF）・消去・戻る） -->
         <div class="controls">
-          <div class="action-buttons">
-            <button id="btn-memo" class="btn-action">メモ [OFF]</button>
-            <button id="btn-if-mode" class="btn-action">仮置き(IF)</button>
-            <button id="btn-erase" class="btn-action">消去</button>
-            <button id="btn-undo" class="btn-action">1手戻す</button>
+          <div class="action-buttons" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:4px; margin-bottom:8px;">
+            <button id="btn-memo" class="btn">MEMO</button>
+            <button id="btn-if-mode" class="btn">IF</button>
+            <button id="btn-erase" class="btn">DEL</button>
+            <button id="btn-undo" class="btn">UNDO</button>
           </div>
-          <!-- 1〜9の数字選択ボタン -->
-          <div class="numpad">
-            <button class="num-btn" data-value="1">1</button>
-            <button class="num-btn" data-value="2">2</button>
-            <button class="num-btn" data-value="3">3</button>
-            <button class="num-btn" data-value="4">4</button>
-            <button class="num-btn" data-value="5">5</button>
-            <button class="num-btn" data-value="6">6</button>
-            <button class="num-btn" data-value="7">7</button>
-            <button class="num-btn" data-value="8">8</button>
-            <button class="num-btn" data-value="9">9</button>
+          <div class="numpad" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:4px;">
+            <!-- JSで1〜9ボタンを生成、またはHTMLベタ書き -->
+            <button class="btn num-btn" data-value="1">1</button>
+            <button class="btn num-btn" data-value="2">2</button>
+            <button class="btn num-btn" data-value="3">3</button>
+            <button class="btn num-btn" data-value="4">4</button>
+            <button class="btn num-btn" data-value="5">5</button>
+            <button class="btn num-btn" data-value="6">6</button>
+            <button class="btn num-btn" data-value="7">7</button>
+            <button class="btn num-btn" data-value="8">8</button>
+            <button class="btn num-btn" data-value="9">9</button>
           </div>
         </div>
-      </section>
-
-      <!-- 3. 技図鑑画面 -->
-      <section id="screen-dictionary" class="screen">
-        <h2>📖 技図鑑</h2>
-        <div id="dictionary-list" class="dictionary-list">
-          <!-- JSで解放された技の一覧を動的生成 -->
-        </div>
-        <button class="btn-back btn">戻る</button>
       </section>
 
     </main>
   </div>
 
-  <!-- スクリプトの読み込み（ES Modules仕様） -->
+  <!-- CRT（ブラウン管）走査線オーバーレイ[span_18](start_span)[span_18](end_span) -->
+  <div id="crt-overlay"></div>
+
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

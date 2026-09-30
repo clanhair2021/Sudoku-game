@@ -165,3 +165,24 @@ body {
   font-size: 1.2rem;
   background: #2c3e50;
 }
+/* ここから */
+/* 初期ヒント数字 */
+.cell.initial {
+  color: #f39c12;
+  font-weight: bold;
+}
+
+/* 仮置き（IF）の数字 */
+.cell.if-mode {
+  color: #e74c3c; /* オレンジや赤系で視覚的に区別 */
+  font-style: italic;
+}
+
+/* メモ表示の小文字 */
+.cell.memo-text {
+  font-size: 0.65rem;
+  color: #888;
+  word-break: break-all;
+  line-height: 1;
+}
+/* ここまでは将来消す */

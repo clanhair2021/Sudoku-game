@@ -1,5 +1,35 @@
 /* ==========================================
-   1. 基本設定・全体レイアウト
+   1. CSS変数（ライト/ダークテーマ定義）[span_2](start_span)[span_2](end_span)
+   ========================================== */
+:root {
+  /* ライトテーマ（標準）[span_3](start_span)[span_3](end_span) */
+  --bg-color: #fcfcfc;
+  --text-color: #222222;
+  --sub-text-color: #666666;
+  --border-color: #333333;
+  --panel-bg: rgba(255, 255, 255, 0.92);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  
+  /* アクセントカラー（モノクロ基調に合わせたグレー系） */
+  --accent-color: #555555;
+  --selected-cell: #dddddd;
+}
+
+body[data-theme="dark"] {
+  /* ダークテーマ（上書き）[span_4](start_span)[span_4](end_span) */
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --sub-text-color: #aaaaaa;
+  --border-color: #cccccc;
+  --panel-bg: rgba(30, 30, 30, 0.92);
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  
+  --accent-color: #aaaaaa;
+  --selected-cell: #333333;
+}
+
+/* ==========================================
+   2. 基本設定・全体レイアウト
    ========================================== */
 * {
   box-sizing: border-box;
@@ -8,181 +38,130 @@
 }
 
 body {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  background-color: #121214; /* ダーク基調のレトロ感 */
-  color: #e0e0e0;
+  /* レトロフォントの指定（Google Fonts等を想定）[span_5](start_span)[span_5](end_span) */
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  background-color: var(--bg-color); /* 変数を使用[span_6](start_span)[span_6](end_span) */
+  color: var(--text-color);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 #app {
   width: 100%;
-  max-width: 480px; /* スマホ・Web両対応サイズ */
+  max-width: 480px;
   padding: 16px;
-  background-color: #1e1e24;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  background-color: var(--panel-bg);
+  border: 2px solid var(--border-color); /* モノクロの枠線[span_7](start_span)[span_7](end_span) */
+  border-radius: 8px;
+  position: relative; /* CRTオーバーレイの基準 */
 }
 
-/* ヘッダー */
+/* ==========================================
+   3. ヘッダー・ボタン（レトロ風）
+   ========================================== */
 .game-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 2px solid #333;
+  border-bottom: 2px dashed var(--border-color); /* 破線でレトロ感 */
   padding-bottom: 10px;
 }
 
 .game-title {
-  font-size: 1.4rem;
-  color: #f39c12; /* レトロなゴールド・オレンジ */
-}
-
-#tp-display {
-  font-weight: bold;
-  color: #2ecc71;
-  background: #222;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-/* ==========================================
-   2. 画面切替の制御 (CSSで非表示/表示)
-   ========================================== */
-.screen {
-  display: none; /* 基本は全て非表示 */
-}
-
-.screen.active {
-  display: block; /* .active クラスがついた画面だけ表示 */
-}
-
-/* ==========================================
-   3. メニュー画面
-   ========================================== */
-.menu-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
 }
 
 .btn {
-  padding: 14px;
-  font-size: 1rem;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
   font-weight: bold;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  background-color: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
   cursor: pointer;
-  transition: transform 0.1s, background-color 0.2s;
+  transition: all 0.1s ease; /* 素早い反応[span_8](start_span)[span_8](end_span) */
+  text-transform: uppercase;
+}
+
+/* 押し込み感のある立体ボタン効果[span_9](start_span)[span_9](end_span) */
+.btn:active {
+  transform: translateY(2px) scale(0.98); /* クリック時の縮小[span_10](start_span)[span_10](end_span) */
+  background-color: var(--hover-bg);
 }
 
 .btn:hover {
-  background-color: #34495e;
-}
-
-.btn-primary {
-  background-color: #d35400; /* タワーモードなど強調ボタン */
-}
-
-.btn-primary:hover {
-  background-color: #e67e22;
+  background-color: var(--hover-bg);
 }
 
 /* ==========================================
-   4. ナンプレ盤面（9×9）のレイアウト
+   4. ナンプレ盤面（モノクロ対応）
    ========================================== */
 .board-container {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
   gap: 1px;
-  background-color: #444; /* マスの仕切り線 */
-  border: 3px solid #f39c12; /* 外枠の太線 */
-  aspect-ratio: 1 / 1; /* 常に綺麗な正方形を保持 */
+  background-color: var(--border-color); /* マスの仕切り線 */
+  border: 4px solid var(--border-color);
+  aspect-ratio: 1 / 1;
   margin: 16px 0;
 }
 
-/* 3x3ブロックごとの太枠表現 */
 .cell {
-  background-color: #2a2a32;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.2rem;
-  font-weight: bold;
   cursor: pointer;
   user-select: none;
 }
 
-/* 3の倍数のマス目の右側・下側を太線にする */
 .cell[data-col="2"], .cell[data-col="5"] {
-  border-right: 2px solid #f39c12;
+  border-right: 2px solid var(--border-color);
 }
 .cell[data-row="2"], .cell[data-row="5"] {
-  border-bottom: 2px solid #f39c12;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .cell.selected {
-  background-color: #34495e; /* 選択中マス */
+  background-color: var(--selected-cell);
 }
 
 /* ==========================================
-   5. 操作ボタン（テンキー・アクション）
+   5. アニメーション & CRT効果
    ========================================== */
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.screen {
+  display: none;
+  animation: fadeIn 0.25s ease-in-out; /* 下からふわっと表示[span_11](start_span)[span_11](end_span) */
+}
+.screen.active {
+  display: block;
 }
 
-.action-buttons, .numpad {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); } /* 少し下から[span_12](start_span)[span_12](end_span) */
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.numpad {
-  grid-template-columns: repeat(9, 1fr);
+/* CRT（ブラウン管）走査線エフェクト[span_13](start_span)[span_13](end_span) */
+#crt-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none; /* クリックを通過させる[span_14](start_span)[span_14](end_span) */
+  z-index: 999;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.08) 50% /* 薄い黒で横縞を作る[span_15](start_span)[span_15](end_span) */
+  );
+  background-size: 100% 4px; /* 4pxごとに繰り返し[span_16](start_span)[span_16](end_span) */
 }
-
-.btn-action, .num-btn {
-  padding: 10px 0;
-  background: #333;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.num-btn {
-  font-size: 1.2rem;
-  background: #2c3e50;
-}
-/* ここから */
-/* 初期ヒント数字 */
-.cell.initial {
-  color: #f39c12;
-  font-weight: bold;
-}
-
-/* 仮置き（IF）の数字 */
-.cell.if-mode {
-  color: #e74c3c; /* オレンジや赤系で視覚的に区別 */
-  font-style: italic;
-}
-
-/* メモ表示の小文字 */
-.cell.memo-text {
-  font-size: 0.65rem;
-  color: #888;
-  word-break: break-all;
-  line-height: 1;
-}
-/* ここまでは将来消す */

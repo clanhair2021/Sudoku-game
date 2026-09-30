@@ -4,89 +4,112 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SUDOKU MASTER</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- レトロフォントの読み込み -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-</head>
-<!-- 初期状態をダークテーマにする場合 data-theme="dark" を付与 -->
-<body data-theme="dark">
   
-  <div id="app">
+  <!-- レトロゲーム用ドット絵フォント -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- 外部CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+
+  <!-- 右上設定ボタン -->
+  <button class="settings-btn" id="btn-open-settings" title="設定" aria-label="設定">
+    <svg viewBox="0 0 24 24">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6-3.6z"/>
+    </svg>
+  </button>
+
+  <main class="container">
     <!-- ヘッダーエリア -->
     <header class="game-header">
       <h1 class="game-title">SUDOKU</h1>
       <div class="status-bar">
         <span id="tp-display">TP:0000</span>
-        <!-- テーマ切替テスト用ボタン -->
-        <button id="btn-theme-toggle" class="btn" style="padding: 4px; font-size:0.6rem;">THEME</button>
       </div>
     </header>
 
-    <!-- メインコンテンツ（JSで画面切替を行う領域） -->
-    <main id="main-content">
+    <!-- 1. メインメニュー画面 -->
+    <section id="screen-menu" class="screen active">
+      <div class="retro-start-text" style="text-align: center;">- PRESS START -</div>
       
-      <!-- 1. メインメニュー画面 -->
-      <section id="screen-menu" class="screen active">
-        <!-- レトロな点滅メッセージ -->
-        <p class="retro-blink" style="text-align: center; margin-bottom: 20px; font-size: 0.8rem;">
-          - PRESS ANY BUTTON -
-        </p>
+      <div class="menu-difficulty-list">
+        <button id="btn-tower" class="btn-menu">
+          <span>TOWER MODE</span>
+        </button>
+        <button id="btn-normal" class="btn-menu">
+          <span>NORMAL MODE</span>
+        </button>
+        <button id="btn-custom" class="btn-menu">
+          <span>SAVE / LOAD</span>
+        </button>
+        <button id="btn-dictionary" class="btn-menu">
+          <span>DICTIONARY</span>
+        </button>
+        <button id="btn-shop" class="btn-menu">
+          <span>SHOP</span>
+        </button>
+      </div>
+    </section>
 
-        <div class="menu-buttons" style="display:flex; flex-direction:column; gap:16px;">
-          <button id="btn-tower" class="btn-retro">[ TOWER MODE ]</button>
-          <button id="btn-normal" class="btn-retro">[ NORMAL MODE ]</button>
-          <button id="btn-custom" class="btn-retro">[ SAVE / LOAD ]</button>
-          <button id="btn-dictionary" class="btn-retro">[ DICTIONARY ]</button>
-          <button id="btn-shop" class="btn-retro">[ SHOP ]</button>
+    <!-- 2. パズルプレイ画面 -->
+    <section id="screen-game" class="screen">
+      <div class="game-info" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+        <button id="btn-back-menu" class="back-btn">‹ BACK</button>
+        <span id="mode-title" style="align-self:center; font-family: 'Press Start 2P'; font-size: 0.75rem;">TOWER - FL.01</span>
+      </div>
+
+      <div id="board-container" class="board-container">
+        <!-- JSで9x9マスを生成 -->
+      </div>
+
+      <div class="controls">
+        <div class="action-buttons" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-bottom:8px;">
+          <button id="btn-memo" class="btn">MEMO</button>
+          <button id="btn-if-mode" class="btn">IF</button>
+          <button id="btn-erase" class="btn">DEL</button>
+          <button id="btn-undo" class="btn">UNDO</button>
         </div>
-      </section>
-
-      <!-- 2. パズルプレイ画面 -->
-      <section id="screen-game" class="screen">
-        <div class="game-info" style="display:flex; justify-content:space-between; margin-bottom:10px;">
-          <button id="btn-back-menu" class="btn" style="padding:6px;">< BACK</button>
-          <span id="mode-title" style="align-self:center;">TOWER - FL.01</span>
+        <div class="numpad" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:6px;">
+          <button class="btn num-btn" data-value="1">1</button>
+          <button class="btn num-btn" data-value="2">2</button>
+          <button class="btn num-btn" data-value="3">3</button>
+          <button class="btn num-btn" data-value="4">4</button>
+          <button class="btn num-btn" data-value="5">5</button>
+          <button class="btn num-btn" data-value="6">6</button>
+          <button class="btn num-btn" data-value="7">7</button>
+          <button class="btn num-btn" data-value="8">8</button>
+          <button class="btn num-btn" data-value="9">9</button>
         </div>
+      </div>
+    </section>
+  </main>
 
-        <div id="board-container" class="board-container">
-          <!-- JSで9x9マスを生成 -->
-        </div>
-
-        <div class="controls">
-          <div class="action-buttons" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:4px; margin-bottom:8px;">
-            <button id="btn-memo" class="btn">MEMO</button>
-            <button id="btn-if-mode" class="btn">IF</button>
-            <button id="btn-erase" class="btn">DEL</button>
-            <button id="btn-undo" class="btn">UNDO</button>
-          </div>
-          <div class="numpad" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:4px;">
-            <button class="btn num-btn" data-value="1">1</button>
-            <button class="btn num-btn" data-value="2">2</button>
-            <button class="btn num-btn" data-value="3">3</button>
-            <button class="btn num-btn" data-value="4">4</button>
-            <button class="btn num-btn" data-value="5">5</button>
-            <button class="btn num-btn" data-value="6">6</button>
-            <button class="btn num-btn" data-value="7">7</button>
-            <button class="btn num-btn" data-value="8">8</button>
-            <button class="btn num-btn" data-value="9">9</button>
-          </div>
-        </div>
-      </section>
-
-    </main>
-  </div> <!-- /#app -->
-
-  <!-- すりガラス風 ポーズ・ダイアログモーダル（画面全体のオーバーレイとして最背面に配置） -->
-  <div id="pause-modal" class="modal-overlay">
+  <!-- 設定モーダル画面 -->
+  <div id="settings-modal" class="modal-overlay">
     <div class="modal-content">
-      <h2 style="margin-bottom: 16px;">PAUSED</h2>
-      <button id="btn-resume" class="btn-retro">RESUME</button>
+      <div class="modal-header">
+        <h3 style="font-family: 'Press Start 2P'; font-size: 1rem; margin-bottom: 12px;">SETTINGS</h3>
+      </div>
+
+      <div class="setting-item" style="margin-bottom: 16px;">
+        <label for="setting-theme" style="font-size: 0.8rem;">THEME: </label>
+        <select id="setting-theme" style="padding: 4px; font-family: inherit;">
+          <option value="dark">DARK</option>
+          <option value="light">LIGHT</option>
+        </select>
+      </div>
+
+      <button id="btn-close-settings" class="modal-btn">CLOSE</button>
     </div>
   </div>
 
   <!-- CRT（ブラウン管）走査線オーバーレイ -->
   <div id="crt-overlay"></div>
 
+  <!-- JavaScript Modules -->
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

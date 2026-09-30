@@ -27,7 +27,7 @@ body[data-theme="dark"],
 }
 
 /* ===================================================
-   2. body & 背景画像（ご提示の数字イラスト）設定[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
+   2. body & 背景画像（数字イラスト）設定[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
    =================================================== */
 * {
   box-sizing: border-box;
@@ -49,7 +49,7 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* 最背面固定の背景イラスト[span_12](start_span)[span_12](end_span) */
+/* 最背面固定の背景イラスト[span_8](start_span)[span_8](end_span) */
 body::before {
   content: "";
   position: fixed;
@@ -65,15 +65,15 @@ body::before {
   transition: opacity 0.3s ease;
 }
 
-/* ライトモード時背景[span_13](start_span)[span_13](end_span)[span_14](start_span)[span_14](end_span) */
+/* ライトモード時背景[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span) */
 body:not([data-theme="dark"])::before,
 [data-theme="light"] body::before {
-  background-image: url("sudoku-icon-white.png"); /* 黒背景用に反転/黒画像を指定可能 */
-  filter: invert(1); /* 白線を黒線に反転表示 */
+  background-image: url("sudoku-icon-white.png");
+  filter: invert(1);
   opacity: 0.25;
 }
 
-/* ダークモード時背景[span_15](start_span)[span_15](end_span)[span_16](start_span)[span_16](end_span) */
+/* ダークモード時背景[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span) */
 [data-theme="dark"] body::before,
 body[data-theme="dark"]::before {
   background-image: url("sudoku-icon-white.png");
@@ -82,7 +82,7 @@ body[data-theme="dark"]::before {
 }
 
 /* ===================================================
-   3. メイン枠（container）＆ タイトルロゴ画像[span_17](start_span)[span_17](end_span)[span_18](start_span)[span_18](end_span)
+   3. メイン枠（container）＆ ヘッダー・ロゴ[span_13](start_span)[span_13](end_span)[span_14](start_span)[span_14](end_span)
    =================================================== */
 .container {
   width: 100%;
@@ -101,7 +101,26 @@ body[data-theme="dark"]::before {
   overflow: hidden;
 }
 
-/* タイトルロゴエリア[span_19](start_span)[span_19](end_span)[span_20](start_span)[span_20](end_span) */
+/* ヘッダー & ステータスバー（右寄せに最適化）[span_15](start_span)[span_15](end_span) */
+.game-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 2px dashed var(--border);
+}
+
+.status-bar {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--card-bg);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  color: var(--text-main);
+}
+
+/* タイトルロゴエリア[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span) */
 .title-logo-wrapper {
   text-align: center;
   margin-bottom: 12px;
@@ -117,36 +136,12 @@ body[data-theme="dark"]::before {
   filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
 }
 
-/* ライトモード時にタイトルロゴを白黒反転する場合[span_21](start_span)[span_21](end_span)[span_22](start_span)[span_22](end_span) */
+/* ライトモード時にタイトルロゴを黒反転[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span) */
 body:not([data-theme="dark"]) .title-image {
   filter: invert(1) drop-shadow(2px 2px 4px rgba(255, 255, 255, 0.5));
 }
 
-/* ヘッダー & ステータスバー[span_23](start_span)[span_23](end_span) */
-.game-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 10px;
-  border-bottom: 2px dashed var(--border);
-}
-
-.game-title {
-  font-size: 1.1rem;
-  letter-spacing: 2px;
-}
-
-.status-bar {
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: var(--card-bg);
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 2px solid var(--border);
-  color: var(--text-main);
-}
-
-/* 右上設定ギアボタン[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span) */
+/* 右上設定ギアボタン[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span) */
 .settings-btn {
   position: fixed;
   top: 15px;
@@ -171,7 +166,7 @@ body:not([data-theme="dark"]) .title-image {
 }
 
 /* ===================================================
-   4. 画面切替 ＆ アニメーション[span_26](start_span)[span_26](end_span)
+   4. 画面切替 ＆ アニメーション[span_22](start_span)[span_22](end_span)
    =================================================== */
 .screen {
   display: none !important;
@@ -187,7 +182,7 @@ body:not([data-theme="dark"]) .title-image {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 点滅テキスト[span_27](start_span)[span_27](end_span)[span_28](start_span)[span_28](end_span) */
+/* 点滅テキスト[span_23](start_span)[span_23](end_span)[span_24](start_span)[span_24](end_span) */
 .retro-start-text {
   font-size: 0.8rem;
   color: var(--text-main);
@@ -202,7 +197,7 @@ body:not([data-theme="dark"]) .title-image {
 }
 
 /* ===================================================
-   5. メニューボタン ＆ カーソルアニメーション[span_29](start_span)[span_29](end_span)
+   5. メニューボタン ＆ カーソルアニメーション[span_25](start_span)[span_25](end_span)
    =================================================== */
 .menu-difficulty-list {
   display: flex;
@@ -301,7 +296,7 @@ body:not([data-theme="dark"]) .title-image {
 }
 
 /* ===================================================
-   7. CRT走査線 ＆ モーダル設定[span_30](start_span)[span_30](end_span)[span_31](start_span)[span_31](end_span)
+   7. CRT走査線 ＆ モーダル設定[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span)
    =================================================== */
 #crt-overlay {
   position: fixed; top: 0; left: 0;
